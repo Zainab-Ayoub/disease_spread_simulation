@@ -39,9 +39,37 @@ def get_country_column(df: pd.DataFrame) -> str:
             return col
         raise ValueError('No country column found!')
 
-def get_week_sart_columns(df: pd.DataFrame) -> str | None:
+def get_week_start_column(df: pd.DataFrame) -> str | None:
     for keys in [['Week start date (ISO 8601 calendar)'], ['week_start']]:
         col = pick_column(df, keys)
         if col:
             return col
         return None
+
+def get_year_week_column(df: pd.DataFrame) -> tuple[str, str] | tuple[None, None]:
+    year_col = pick_column(df, ['year'])
+    week_col = pick_column(df, ['week'])
+
+    if year_col and week_col:
+        return year_col, week_col
+    
+    return None, None
+
+def to_week_start_date(df: pd.DataFrame) -> pd.Series:
+    """ prefer explicit week start date if present """ 
+    date_col = get_week_start_column(df)
+    if date_col:
+        return pd.to_datetime(df[date_col], errors='coerce')
+
+    """ otherwise, calculate from year and week """
+    year_col, week_col = get_year_week_column(df)
+    if not year_col or not week_col:
+        raise ValueError('Missing year or week column!')
+
+    year = df[year_col].astype(str).str.extract(r"(\d{4})", expand = False) 
+    week = df[week_col].astype(str).str.extract(r"(\d{1,2})", expand = False) 
+
+    as_str = year + week + '1' # monday = 1
+    return pd.to_datetime(as_str, format = '%G%V%u', errors = 'coerce')
+    
+      
