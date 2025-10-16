@@ -2,3 +2,10 @@
 __pycache__/
 *.pyc
 *.pyo
+.ipynb_checkpoints/
+data/raw/**
+data/processed/**
+*.parquet
+*.csv
+.env
+.DS_Store
