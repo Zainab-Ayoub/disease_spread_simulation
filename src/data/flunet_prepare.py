@@ -1,5 +1,6 @@
 import re # regular expression to find & replace text 
-from pathlib import Path # pathlib to handle file paths 
+from pathlib import Path
+from tkinter import N # pathlib to handle file paths 
 import numpy as np 
 import pandas as pd
 
@@ -32,9 +33,15 @@ def pick_column(df: pd.DataFrame, keywords: list[str]) -> str | None:
 
 def get_country_column(df: pd.DataFrame) -> str:
     """Get the country column from a DataFrame."""
-    for keys in [['Country area or territory'], ['Country']]:
+    for keys in [['Country area or territory'], ['country']]:
         col = pick_column(df, keys)
         if col:
             return col
         raise ValueError('No country column found!')
-            
+
+def get_week_sart_columns(df: pd.DataFrame) -> str | None:
+    for keys in [['Week start date (ISO 8601 calendar)'], ['week_start']]:
+        col = pick_column(df, keys)
+        if col:
+            return col
+        return None
