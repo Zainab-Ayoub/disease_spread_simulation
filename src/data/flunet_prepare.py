@@ -21,3 +21,11 @@ def read_csv(csv_path: Path) -> pd.DataFrame:
     df.columns = [c.strip() for c in df.columns]
     return df
 
+def pick_columns(df: pd.DataFrame, keywords: list[str]) -> str | None:
+    """Pick columns from a DataFrame based on keywords."""
+    lower_map = {c.lower(): c for c in df.columns}
+
+    for k in lower_map:
+        if all(word in k for word in keywords):
+            return lower_map[k]
+        return None    
